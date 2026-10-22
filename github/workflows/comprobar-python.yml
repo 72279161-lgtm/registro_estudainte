@@ -1,0 +1,48 @@
+# nombre del workflows
+name: comprobar pograma python
+# el evento se ejecuta cada vez que se ejecuta un push
+on:
+
+  push:
+
+          # aqui definimos los trabajos que ejecutara en github
+josd:          
+      verificar:
+          runs-on: ubuntu-latest
+          steps:
+              # PASO 1
+              # descarga dentro del runner el contenido del repositorio
+              - name: obtener repositorio
+                uses: actions/checkout@v7
+
+                # PASO 2
+                # prepara python dentro del entorno de ejecucion
+               -name: configurar python
+                uses: actions/setup-checkout@v7
+                with: 
+                  # version python que actualizara el trabajo
+                  python-version: '3.14'
+
+               # PASO 3
+               # comprobamos que pograma.py existe dentro del repositorio
+               -name: verificar archivo
+                run: test -f pograma.py
+
+              # PASO 4
+               -name: verificar sintaxis
+                run: python -m py_compile pograma.py
+
+              # PASO 5
+              # EJECUTAR POGRAMA
+
+               -name: Ejecutar pograma
+                run: python pograma.py
+
+              # PASO 6
+              # guardamos la salida y comprobamos que el resultado sea 24
+
+               -name: comprobar resultado esperado
+                run:
+                  python pograma.py > salida.txt
+                  grep "TOTAL.24" salida.txt
+
