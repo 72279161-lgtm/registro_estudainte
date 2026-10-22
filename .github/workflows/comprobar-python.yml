@@ -1,0 +1,38 @@
+# Nombre del workflow
+name: comprobar programa python
+
+# Se ejecuta cada vez que se hace un push
+on:
+  push:
+
+# Trabajos que ejecutará GitHub
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+
+    steps:
+      # PASO 1: Descargar el repositorio
+      - name: obtener repositorio
+        uses: actions/checkout@v4
+
+      # PASO 2: Configurar Python
+      - name: configurar python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      # PASO 3: Comprobar que el archivo existe
+      - name: verificar archivo
+        run: test -f programa.py
+
+      # PASO 4: Verificar la sintaxis
+      - name: verificar sintaxis
+        run: python -m py_compile programa.py
+
+      # PASO 5: Ejecutar el programa y guardar la salida
+      - name: ejecutar programa
+        run: python programa.py > salida.txt
+
+      # PASO 6: Comprobar el resultado esperado
+      - name: comprobar resultado esperado
+        run: grep -F "TOTAL 24" salida.txt
